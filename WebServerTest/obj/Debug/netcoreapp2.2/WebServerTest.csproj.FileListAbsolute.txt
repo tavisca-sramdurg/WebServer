@@ -1,0 +1,4 @@
+C:\Users\sramdurg\source\repos\WebServer\WebServerTest\obj\Debug\netcoreapp2.2\WebServerTest.csprojAssemblyReference.cache
+C:\Users\sramdurg\source\repos\WebServer\WebServerTest\obj\Debug\netcoreapp2.2\WebServerTest.csproj.CoreCompileInputs.cache
+C:\Users\sramdurg\source\repos\WebServer\WebServerTest\obj\Debug\netcoreapp2.2\WebServerTest.AssemblyInfoInputs.cache
+C:\Users\sramdurg\source\repos\WebServer\WebServerTest\obj\Debug\netcoreapp2.2\WebServerTest.AssemblyInfo.cs
