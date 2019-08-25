@@ -6,36 +6,48 @@ namespace WebServer
 {
     public class Dispatcher
     {
-        private WebAppList webAppList;
+        private WebAppList _webAppList;
+        private WebApp _webApp;
         public Dispatcher()
         {
-            webAppList = new WebAppList();
+            _webAppList = new WebAppList();
         }
 
         public bool DispatchRequest(Socket clientSocket)
         {
-            NetworkStream networkStream = new NetworkStream(clientSocket);
-            byte[] dataInBytes = new byte[1024];
-            int byteDataCount = networkStream.Read(dataInBytes, 0, dataInBytes.Length);
-            string request = Encoding.ASCII.GetString(dataInBytes, 0, byteDataCount);
-
-            string[] tokens = RequestParser.ParseRequest(request);
-            string[] parsedUrl = tokens[1].Split('/');
-
-            if (parsedUrl[1].Equals("api"))
+            try
             {
-                RestApi.SendResponse(request, tokens, clientSocket);
-                return true;
+                NetworkStream networkStream = new NetworkStream(clientSocket);
+                byte[] dataInBytes = new byte[1024];
+                int byteDataCount = networkStream.Read(dataInBytes, 0, dataInBytes.Length);
+                string request = Encoding.ASCII.GetString(dataInBytes, 0, byteDataCount);
+
+                string[] resquestTokens = RequestParser.ParseRequest(request); //firstLine of header
+                string[] parsedUrl = resquestTokens[1].Split('/');  //splitting the url
+
+                if (parsedUrl[1].Equals("api"))
+                {
+                    RestApi.SendResponse(request, resquestTokens, clientSocket);
+                    return true;
+                }
+                else if (_webAppList.IfWebsiteExists(parsedUrl[1]))
+                {
+                    string uri = "/" + parsedUrl[1];
+                    string rootDirectoryPath = _webAppList.GetPathToRootDirectory(parsedUrl[1]);
+                    _webApp = new WebApp(uri, rootDirectoryPath, clientSocket);
+                    _webApp.ProcessRequest(resquestTokens[1]);  //Sending url to Webapp
+                    return true;
+                }
+                else
+                {
+                    throw new ServerException();             
+                }
             }
-            //else if ()
-            //{
-
-            //}
-            else
+            catch(ServerException e)
             {
-                Error.PageNotFound(clientSocket);
+                e.BadRequestException(clientSocket);
                 return false;
             }
-        }
+        }   
     }
 }

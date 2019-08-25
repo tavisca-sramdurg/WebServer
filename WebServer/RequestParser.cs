@@ -7,8 +7,10 @@ namespace WebServer
         public static string[] ParseRequest(string request)
         {
             string[] linesInRequest = request.Split('\n');
-            string[] tokens = linesInRequest[0].Split(' ');
-            return tokens;
+            string[] requestTokens = linesInRequest[0].Split(' ');     
+            return requestTokens;   //return the first line
         }
     }
 }
+
+

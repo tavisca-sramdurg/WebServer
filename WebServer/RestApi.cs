@@ -21,24 +21,18 @@ namespace WebServer
 
             var result = new Object();
 
-            if (methodName.Equals("Invalid Api method"))
-                Error.InvalidApiCall(clientSocket);
-            else
-            {
-                result = apiMethodList.GetType().GetMethod(methodName).Invoke(apiMethodList, new object[] { body });
+            result = apiMethodList.GetType().GetMethod(methodName).Invoke(apiMethodList, new object[] { body });
 
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.AppendLine("HTTP/1.0 200 OK");
-                stringBuilder.AppendLine("Content-Type: application/json" + ";charset=UTF-8");
-                stringBuilder.AppendLine();
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("HTTP/1.0 200 OK");
+            stringBuilder.AppendLine("Content-Type: application/json" + ";charset=UTF-8");
+            stringBuilder.AppendLine();
 
-                List<byte> response = new List<byte>();
-                response.AddRange(Encoding.ASCII.GetBytes(stringBuilder.ToString()));
-                response.AddRange(Encoding.ASCII.GetBytes(result.ToString()));
-                byte[] responseInBytes = response.ToArray();
-                clientSocket.Send(responseInBytes);
-            }
-                
+            List<byte> response = new List<byte>();
+            response.AddRange(Encoding.ASCII.GetBytes(stringBuilder.ToString()));
+            response.AddRange(Encoding.ASCII.GetBytes(result.ToString()));
+            byte[] responseInBytes = response.ToArray();
+            clientSocket.Send(responseInBytes);
         }
     }
 }

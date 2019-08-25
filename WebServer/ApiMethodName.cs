@@ -6,18 +6,24 @@ namespace WebServer
     {
         public string getName(string requestType, string apiMethod, Socket clientSocket)
         {
-            foreach (var type in typeof(ApiMethodList).GetMethods())
+            try
             {
-                var attributes = (ApiMethodAttribute[])type.GetCustomAttributes(typeof(ApiMethodAttribute), false);
-                foreach(var attribute in attributes)
+                foreach (var type in typeof(ApiMethodList).GetMethods())
                 {
-                    if (attribute.RequestType == requestType && attribute.ApiMethod == apiMethod)
-                        return type.Name;
+                    var attributes = (ApiMethodAttribute[])type.GetCustomAttributes(typeof(ApiMethodAttribute), false);
+                    foreach (var attribute in attributes)
+                    {
+                        if (attribute.RequestType == requestType && attribute.ApiMethod == apiMethod)
+                            return type.Name;
+                    }
                 }
+                throw new ServerException();
             }
-
-            //return Error.InvalidApiMethod(clientSocket);      //Make this method
-            return "Invalid Api method";
+            catch (ServerException e)
+            {
+                e.InvalidApiCallException(clientSocket);
+                return "Invalid Api method";
+            }
         }
     }
 }

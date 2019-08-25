@@ -5,26 +5,18 @@
         [ApiMethod("POST", "/year")]
         public bool IsLeapYear(string requestBody)
         {
-            //Refactor acc to you
-            string[] body = requestBody.Split(',');
-            string[] data = new string[2];
-            int year = 0;
-            for (int i = 0; i < body.Length; i++)
+            string[] tempArray = requestBody.Split(':');
+            char[] charsToTrim = { ' ', '\n', '}' };
+            string year = tempArray[1].Trim(charsToTrim);
+
+            int yearValue = 0;
+            int.TryParse(year, out yearValue);
+            if (yearValue % 100 == 0)
             {
-                if (body[i].Contains("year"))
-                {
-                    data = body[i].Split(':');
-                    break;
-                }
-            }
-            string[] tempArray = data[1].Split('}');
-            int.TryParse(tempArray[0], out year);
-            if (year % 100 == 0)
-            {
-                if (year % 400 == 0)
+                if (yearValue % 400 == 0)
                     return true;
             }
-            else if (year % 4 == 0)
+            else if (yearValue % 4 == 0)
             {
                 return true;
             }

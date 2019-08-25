@@ -8,7 +8,7 @@ namespace WebServer
     public class HTTP_Listener
     {
         private Socket _webServerSocket;
-        private IPEndPoint _localEndPoint;
+        private IPEndPoint _ipEndPoint;
         private Dispatcher _dispatcher;
 
         public HTTP_Listener()
@@ -19,8 +19,8 @@ namespace WebServer
         public Socket StartListening()
         {
             _webServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            _localEndPoint = new IPEndPoint(IPAddress.Any, 55031);
-            _webServerSocket.Bind(_localEndPoint);
+            _ipEndPoint = new IPEndPoint(IPAddress.Any, 55031);
+            _webServerSocket.Bind(_ipEndPoint);
             _webServerSocket.Listen(10);
             Console.WriteLine("Server has started.");
             return _webServerSocket;
@@ -28,24 +28,17 @@ namespace WebServer
 
         public void ForwardRequestToDispatcher(Socket webServerSocket)
         {
-            try
+            new Thread(_ =>
             {
-                new Thread(_ =>
+                while (true)
                 {
-                    while (true)
-                    {
-                        Socket clientSocket = webServerSocket.Accept();
-                        Console.WriteLine("Connection established.");
-                        _dispatcher.DispatchRequest(clientSocket);
-                        clientSocket.Shutdown(SocketShutdown.Both);
-                        clientSocket.Close();
-                    }
-                }).Start();
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Unable to connect");
-            }
+                    Socket clientSocket = webServerSocket.Accept();
+                    Console.WriteLine("Connection established.");
+                    _dispatcher.DispatchRequest(clientSocket);
+                    clientSocket.Shutdown(SocketShutdown.Both);
+                    clientSocket.Close();
+                }
+            }).Start();
         }
     }
 }
