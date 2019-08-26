@@ -19,7 +19,11 @@ namespace WebServer
 
         public string GetPathToRootDirectory(string webAppName)
         {
-            return _webAppList[webAppName];
+            if (!_webAppList.ContainsKey(webAppName))
+            {
+                return null;
+            }
+            return _webAppList[webAppName];    
         }
     }
 }

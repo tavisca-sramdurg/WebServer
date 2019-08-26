@@ -19,7 +19,7 @@ namespace WebServer
         public Socket StartListening()
         {
             _webServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            _ipEndPoint = new IPEndPoint(IPAddress.Any, 55031);
+            _ipEndPoint = new IPEndPoint(IPAddress.Any, 55032);
             _webServerSocket.Bind(_ipEndPoint);
             _webServerSocket.Listen(10);
             Console.WriteLine("Server has started.");
